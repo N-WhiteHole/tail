@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hpcloud/tail/ratelimiter"
-	"github.com/hpcloud/tail/watch"
+	"github.com/N-WhiteHole/tail/ratelimiter"
+	"github.com/N-WhiteHole/tail/watch"
 )
 
 func init() {
@@ -103,7 +103,7 @@ func TestStopAtEOF(t *testing.T) {
 
 	// read "hello"
 	line := <-tail.Lines
-	if line.Text != "hello" {
+	if string(line.Text) != "hello" {
 		t.Errorf("Expected to get 'hello', got '%s' instead", line.Text)
 	}
 
@@ -281,7 +281,7 @@ func TestTell(t *testing.T) {
 	for l := range tail.Lines {
 		// it may readed one line in the chan(tail.Lines),
 		// so it may lost one line.
-		if l.Text != "world" && l.Text != "again" {
+		if string(l.Text) != "world" && string(l.Text) != "again" {
 			tailTest.Fatalf("mismatch; expected world or again, but got %s",
 				l.Text)
 		}
@@ -303,7 +303,7 @@ func TestBlockUntilExists(t *testing.T) {
 		tailTest.CreateFile("test.txt", "hello world\n")
 	}()
 	for l := range tail.Lines {
-		if l.Text != "hello world" {
+		if string(l.Text) != "hello world" {
 			tailTest.Fatalf("mismatch; expected hello world, but got %s",
 				l.Text)
 		}
@@ -545,7 +545,7 @@ func (t TailTest) ReadLines(tail *Tail, lines []string) {
 		}
 		// Note: not checking .Err as the `lines` argument is designed
 		// to match error strings as well.
-		if tailedLine.Text != line {
+		if string(tailedLine.Text) != line {
 			t.Fatalf(
 				"unexpected line/err from tail: "+
 					"expecting <<%s>>>, but got <<<%s>>>",
